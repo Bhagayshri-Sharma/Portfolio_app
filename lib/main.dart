@@ -21,6 +21,6 @@ final theme = ThemeData(
 void main() {
   runApp(MaterialApp(
     theme: theme,
-    home: const ProfileScreen(),
+    home: ProfileScreen(),
   ));
 }

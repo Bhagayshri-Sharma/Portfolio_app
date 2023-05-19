@@ -4,43 +4,19 @@ import 'package:portfolior/home.dart';
 import 'package:portfolior/about.dart';
 import 'package:portfolior/professional_experience.dart';
 import 'package:portfolior/contact.dart';
+import 'package:portfolior/section.dart';
+import 'package:portfolior/education.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class ProfileScreen extends StatelessWidget {
+  ProfileScreen({super.key});
 
-  @override
-  State<ProfileScreen> createState() {
-    return _ProfileScreenState();
-  }
-}
+  final List<Section> section = [
+    Section(key : GlobalKey(), title : 'SKILLS', body: const About(), icon: const Icon(Icons.computer)),
+    Section(key : GlobalKey(), title: "PROFESSIONAL EXPERIENCE", body: const Resume(), icon: const Icon(Icons.person)),
+    Section(key : GlobalKey(), title: "EDUCATION", body: const Education(), icon: const Icon(Icons.school)),
+    Section(key : GlobalKey(), title: "CONTACT", body: const Contact(), icon : const Icon(Icons.contact_page_outlined)),
 
-class _ProfileScreenState extends State<ProfileScreen> {
-
-  Widget screenStart = Home();
-
-
-  void setScreen(String screenTitle){
-
-      setState(()
-      {
-        if (screenTitle == 'about')
-        {
-        screenStart = const About();
-        }
-        if (screenTitle == 'home')
-        {
-        screenStart = const Home();
-        } if (screenTitle == 'resume')
-        {
-        screenStart = Resume();
-        } if (screenTitle == 'contact')
-        {
-        screenStart = const Contact();
-        }
-      });
-
-
-  }
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -69,47 +45,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
           ),
         ),
-        body: screenStart,
-      floatingActionButton: FloatingView(setScreen: setScreen),
+        body: Home(sectionList: section,),
+      floatingActionButton: FloatingView(sectionList: section,),
     );
   }
 }
 
 
-
 class FloatingView extends StatelessWidget{
 
-  FloatingView({super.key, required this.setScreen});
-  void Function(String) setScreen;
+  FloatingView({super.key,  required this.sectionList});
+  final List<Section> sectionList ;
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return SpeedDial(
         animatedIcon : AnimatedIcons.menu_close,
-        children : [
-          SpeedDialChild(
-            child: const Icon(Icons.computer),
-            label: "skill",
-            onTap: () {setScreen('skill');
-             },
-          ),
-          SpeedDialChild(
-            child: const Icon(Icons.person),
-            label: "experience",
-            onTap: () {setScreen('experience');},
-          ),
-          SpeedDialChild(
-            child: const Icon(Icons.school_outlined),
-            label: "education",
-            onTap: () {setScreen('education');},
-          ),
-          SpeedDialChild(
-            child: const Icon(Icons.contact_page_outlined),
-            label: "contact",
-            onTap: () {setScreen('contact');},
-          ),
-        ]
+        children : sectionList.map((section) => SpeedDialChild(
+          child: section.icon,
+          label: section.title,
+          onTap: () {Scrollable.ensureVisible(
+              section.key.currentContext!,
+            );       },
+        ),).toList()
+
     );
   }
 }
